@@ -1,0 +1,38 @@
+*{
+    margin: 0;
+    padding: 0;
+}
+.game {
+    font-family: 'Arial', sans-serif;
+    text-align: center;
+  }
+  
+  .hands {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .dealerHand{
+    margin-bottom:30px ;
+  }  
+  .controls button {
+    margin: 0 10px;
+    padding: 10px 20px;
+    font-size: 16px;
+    border-radius: 5px;
+    border: none;
+    background-color: #007bff;
+    color: white;
+    cursor: pointer;
+  }
+  
+  .controls button:disabled {
+    background-color: #ccc;
+  }
+  
+  .message {
+    font-size: 20px;
+    margin-top: 20px;
+    color: #007bff;
+  }
+  
