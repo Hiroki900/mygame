@@ -1,38 +1,120 @@
-*{
-    margin: 0;
-    padding: 0;
+body {
+  font-family: Arial, sans-serif;
+  text-align: center;
+  background-color: #2e2e2e;
+  color: white;
 }
+
+h1 {
+  margin-top: 20px;
+}
+
+button {
+  margin: 10px;
+  padding: 10px 20px;
+  font-size: 16px;
+  cursor: pointer;
+  border: none;
+  border-radius: 5px;
+  transition: background-color 0.3s ease;
+}
+
+button:hover {
+  background-color: #0056b3;
+}
+
 .game {
-    font-family: 'Arial', sans-serif;
-    text-align: center;
-  }
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 5px;
+}
+
+.title-screen {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: absolute;
+  top: 35%;
+}
+
+.title-screen h1 {
+  font-size: 36px;
+  margin-bottom: 10px;
   
-  .hands {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-  }
-  .dealerHand{
-    margin-bottom:30px ;
-  }  
-  .controls button {
-    margin: 0 10px;
-    padding: 10px 20px;
-    font-size: 16px;
-    border-radius: 5px;
-    border: none;
-    background-color: #007bff;
-    color: white;
-    cursor: pointer;
-  }
-  
-  .controls button:disabled {
-    background-color: #ccc;
-  }
-  
-  .message {
-    font-size: 20px;
-    margin-top: 20px;
-    color: #007bff;
-  }
-  
+}
+
+.title-screen button {
+  font-size: 20px;
+  padding: 15px 30px;
+  border-radius: 8px;
+  background-color: #007bff;
+  color: white;
+  cursor: pointer;
+  border: none;
+  transition: background-color 0.3s ease;
+}
+
+.title-screen button:hover {
+  background-color: #0056b3;
+}
+
+.hands {
+  display: flex;
+  flex-direction: column; /* 縦方向に配置する */
+  align-items: center; /* 中央に配置する */
+  width: 100%;
+  margin-top: 10px;
+}
+
+
+.dealer-hand {
+  margin-bottom: 10px;
+}
+
+.dealer-hand .card:first-child {
+  visibility: hidden;
+}
+
+.player-hand {
+  margin-bottom: 10px;
+}
+
+.player-hand .card {
+  transform: translateY(0);
+}
+
+.controls {
+  margin: 0px 0;
+}
+
+.message {
+  font-size: 20px;
+  margin-top: 20px;
+  color: #007bff;
+}
+
+.card {
+  background-color: white;
+  color: black;
+  border: 1px solid black;
+  border-radius: 5px;
+  width: 80px;
+  height: 120px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 20px;
+  transition: transform 0.3s ease;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+}
+
+.hand {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+

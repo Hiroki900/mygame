@@ -9,6 +9,8 @@ const Game: React.FC = () => {
     const [playerHand, setPlayerHand] = useState<Card[]>([]);
     const [gameOver, setGameOver] = useState<boolean>(false);
     const [message, setMessage] = useState<string>('');
+    const [showTitleScreen, setShowTitleScreen] = useState<boolean>(true);
+    
 
     const startGame = () => {
         const newDeck: Card[] = shuffle(createDeck());
@@ -20,11 +22,21 @@ const Game: React.FC = () => {
         setDealerHand(dealerStartingHand);
         setGameOver(false);
         setMessage('');
+        setShowTitleScreen(false);
     };
+
+    const calculateTotal = (cards: Card[]): number => {
+        const handValue = calculateHandValue(cards);
+        return handValue;
+    };
+    
+    const dealerTotal = calculateTotal(dealerHand);
+    const playerTotal = calculateTotal(playerHand);
+    
 
     const hit = () => {
         if (gameOver) return;
-        const newDeck = [...deck];//コピーの作成
+        const newDeck = [...deck];
         const newPlayerHand = [...playerHand, newDeck.pop()!];
         setDeck(newDeck);
         setPlayerHand(newPlayerHand);
@@ -65,24 +77,38 @@ const Game: React.FC = () => {
 
     return (
         <div className="game">
-            <h1>Blackjack</h1>
-
-            <div className="hands">
-                <div className='dealerHand'>
-                    <h2>Dealer</h2>
-                    <Hand cards={dealerHand} />
+            {showTitleScreen ? (
+                <div className="title-screen">
+                    <h1>BlackJack</h1>
+                    <button onClick={() => { startGame(); setShowTitleScreen(false); }}>Start Game</button>
                 </div>
-                <div>
-                    <Hand cards={playerHand} />
-                    <h2>Player</h2>
-                </div>
-            </div>
-            <div className="controls">
-                <button onClick={startGame}>スタート</button>
-                <button onClick={hit} disabled={gameOver}>Hit</button>
-                <button onClick={stand} disabled={gameOver}>Stand</button>
-            </div>
-            <div className="message">{message}</div>
+            ) : (
+                <>
+                    <div className="hands">
+                        <div className='dealerHand'>
+                            <h2>Dealer</h2>
+                            <div>{dealerTotal}</div>
+                            <Hand cards={dealerHand} />
+                        </div>
+                        <div className='playerHand'>
+                            <Hand cards={playerHand} />
+                            <h2>Player</h2>
+                            <div>{playerTotal}</div>
+                        </div>
+                    </div>
+                    <div className="controls">
+                        <button onClick={startGame}>Start</button>
+                        <button onClick={hit} disabled={gameOver}>Hit</button>
+                        <button onClick={stand} disabled={gameOver}>Stand</button>
+                        {gameOver && (
+                            <>
+                                <button onClick={() => setShowTitleScreen(true)}>Back to Title</button>
+                            </>
+                        )}
+                    </div>
+                    <div className="message">{message}</div>
+                </>
+            )}
         </div>
     );
 };
