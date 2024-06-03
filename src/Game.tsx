@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import './Game.css';
 import Hand from './Hand';
 import { Card, createDeck, shuffle, calculateHandValue } from './gameUtils';
@@ -10,47 +10,13 @@ const Game: React.FC = () => {
     const [gameOver, setGameOver] = useState<boolean>(false);
     const [message, setMessage] = useState<string>('');
     const [showTitleScreen, setShowTitleScreen] = useState<boolean>(true);
+    const [showDealerSecondCard, setShowDealerSecondCard] = useState<boolean>(false);
     
-
-    const startGame = () => {
-        const newDeck: Card[] = shuffle(createDeck());
-        const playerStartingHand: Card[] = [newDeck.pop()!, newDeck.pop()!];
-        const dealerStartingHand: Card[] = [newDeck.pop()!, newDeck.pop()!];
-
-        setDeck(newDeck);
-        setPlayerHand(playerStartingHand);
-        setDealerHand(dealerStartingHand);
-        setGameOver(false);
-        setMessage('');
-        setShowTitleScreen(false);
-    };
-
-    const calculateTotal = (cards: Card[]): number => {
-        const handValue = calculateHandValue(cards);
-        return handValue;
-    };
-    
-    const dealerTotal = calculateTotal(dealerHand);
-    const playerTotal = calculateTotal(playerHand);
-    
-
-    const hit = () => {
-        if (gameOver) return;
-        const newDeck = [...deck];
-        const newPlayerHand = [...playerHand, newDeck.pop()!];
-        setDeck(newDeck);
-        setPlayerHand(newPlayerHand);
-
-        const playerHandValue = calculateHandValue(newPlayerHand);
-        if (playerHandValue > 21) {
-            setMessage('Player Bust! Dealer Win!');
-            setGameOver(true);
-        }
-    };
-
-    const stand = () => {
+    const stand = useCallback(() => {
         if (gameOver) return;
 
+        setShowDealerSecondCard(true); // Show dealer's second card
+        
         let newDealerHand: Card[] = [...dealerHand];
         let newDeck: Card[] = [...deck];
         while (calculateHandValue(newDealerHand) < 17) {
@@ -73,6 +39,48 @@ const Game: React.FC = () => {
 
         setDealerHand(newDealerHand);
         setGameOver(true);
+    }, [gameOver, dealerHand, deck, playerHand]);
+
+    useEffect(() => {
+        if (playerHand.length > 0 && calculateTotal(playerHand) === 21) {
+            stand();
+        }
+    }, [playerHand, stand]);
+
+    const startGame = () => {
+        const newDeck: Card[] = shuffle(createDeck());
+        const playerStartingHand: Card[] = [newDeck.pop()!, newDeck.pop()!];
+        const dealerStartingHand: Card[] = [newDeck.pop()!, newDeck.pop()!];
+
+        setDeck(newDeck);
+        setPlayerHand(playerStartingHand);
+        setDealerHand(dealerStartingHand);
+        setGameOver(false);
+        setMessage('');
+        setShowDealerSecondCard(false);
+        setShowTitleScreen(false);
+    };
+
+    const calculateTotal = (cards: Card[]): number => {
+        return calculateHandValue(cards);
+    };
+
+    const dealerTotal = calculateTotal(dealerHand);
+    const playerTotal = calculateTotal(playerHand);
+
+    const hit = () => {
+        if (gameOver) return;
+        const newDeck = [...deck];
+        const newPlayerHand = [...playerHand, newDeck.pop()!];
+        setDeck(newDeck);
+        setPlayerHand(newPlayerHand);
+
+        const playerHandValue = calculateHandValue(newPlayerHand);
+        if (playerHandValue > 21) {
+            setMessage('Player Bust! Dealer Win!');
+            setGameOver(true);
+            setShowDealerSecondCard(true); // Show dealer's second card when player busts
+        }
     };
 
     return (
@@ -87,8 +95,8 @@ const Game: React.FC = () => {
                     <div className="hands">
                         <div className='dealerHand'>
                             <h2>Dealer</h2>
-                            <div>{dealerTotal}</div>
-                            <Hand cards={dealerHand} />
+                            <div>{showDealerSecondCard ? dealerTotal : calculateHandValue([dealerHand[0]])}</div>
+                            <Hand cards={dealerHand} showSecondCard={showDealerSecondCard} />
                         </div>
                         <div className='playerHand'>
                             <Hand cards={playerHand} />
